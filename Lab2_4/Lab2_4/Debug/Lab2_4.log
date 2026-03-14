@@ -1,0 +1,17 @@
+﻿  repository.c
+  service.c
+  test_repository.c
+  test_service.c
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(7,3): warning C4013: 'strcpy' undefined; assuming extern returning int
+  test_validator.c
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(178,7): warning C4013: 'strcmp' undefined; assuming extern returning int
+D:\OOP_lab\Lab2_4\Lab2_4\test_service.c(28,2): warning C4013: 'strcmp' undefined; assuming extern returning int
+  ui.c
+  Generating Code...
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(173,1): warning C4172: returning address of local variable or temporary : print_inv
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(191,1): warning C4172: returning address of local variable or temporary : print_inv
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(209,1): warning C4172: returning address of local variable or temporary : print_inv
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(184,1): warning C4172: returning address of local variable or temporary : print_inv
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(202,1): warning C4172: returning address of local variable or temporary : print_inv
+D:\OOP_lab\Lab2_4\Lab2_4\service.c(220,1): warning C4172: returning address of local variable or temporary : print_inv
+  Lab2_4.vcxproj -> D:\OOP_lab\Lab2_4\Debug\Lab2_4.exe
