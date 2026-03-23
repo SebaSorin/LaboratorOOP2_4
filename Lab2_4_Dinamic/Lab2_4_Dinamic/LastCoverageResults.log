@@ -1,0 +1,21 @@
+[2026-03-23 18:32:27] [info] Start Program:
+Path:"D:\OOP_lab\Lab2_4_Dinamic\x64\Debug\Lab2_4_Dinamic.exe"
+Arguments:
+Working directory: "D:\OOP_lab\Lab2_4_Dinamic\Lab2_4_Dinamic\"
+Modules: Selected: D:\OOP_lab\Lab2_4_Dinamic\x64\Debug\Lab2_4_Dinamic.exe Excluded: 
+Sources: Selected: D:\OOP_lab\Lab2_4_Dinamic\Lab2_4_Dinamic Excluded: 
+Log Level: Normal
+Cover Children: 0
+Aggregate by file: 1
+Continue after C++ exception: 0
+Optimized build support: 0
+Export: Binary C:\Users\40726\AppData\Local\Temp\usjaceaw.4tk 
+Input coverage: 
+Unified diff: 
+Excluded line regular expressions: 
+Substitute pdb source paths: 
+
+[2026-03-23 18:32:27] [info] Module: D:\OOP_lab\Lab2_4_Dinamic\x64\Debug\Lab2_4_Dinamic.exe is selected because it matches selected pattern: D:\OOP_lab\Lab2_4_Dinamic\x64\Debug\Lab2_4_Dinamic.exe
+[2026-03-23 18:32:29] [info] ----------------------------------------------------
+[2026-03-23 18:32:29] [info] Coverage binary generated in file: C:\Users\40726\AppData\Local\Temp\usjaceaw.4tk
+[2026-03-23 18:32:29] [info] ----------------------------------------------------

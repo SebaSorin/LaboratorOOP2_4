@@ -1,0 +1,9 @@
+﻿  repository.c
+  service.c
+  test_repository.c
+  test_service.c
+  test_validator.c
+  ui.c
+  validator.c
+  Generating Code...
+  Lab2_4_Dinamic.vcxproj -> D:\OOP_lab\Lab2_4_Dinamic\x64\Debug\Lab2_4_Dinamic.exe

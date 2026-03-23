@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Lab2_4_Dinamic/Lab2_4_Dinamic.vcxproj" Id="400f4be8-295d-4d29-81c8-d1233a93579c" />
+</Solution>
