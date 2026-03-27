@@ -7,7 +7,7 @@ int validate_id(int product_id) {
 	return product_id > 0;
 }
 
-int validate_type(char product_type[], int max_len) {
+int validate_type(char* product_type, int max_len) {
 	// is not null
 	// has less than 30 characters
 	// only has spaces and letters
@@ -32,12 +32,12 @@ int validate_type(char product_type[], int max_len) {
 	return space_cnt != len; // is not made up of only spaces
 }
 
-int validate_manufacturer(char product_man[]) {
+int validate_manufacturer(char* product_man) {
 	// same as type but with max size 50
 	return validate_type(product_man, 50);
 }
 
-int validate_model(char product_model[]) {
+int validate_model(char* product_model) {
 	// is not null
 	// has less than 30 characters
 	// can have spaces, letters and numbers

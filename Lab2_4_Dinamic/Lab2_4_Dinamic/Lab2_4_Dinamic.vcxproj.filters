@@ -61,5 +61,8 @@
     <ClCompile Include="test_validator.c">
       <Filter>Resource Files\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="model.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

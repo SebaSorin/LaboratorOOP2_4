@@ -23,7 +23,7 @@ int validate_id(int product_id);
 		- 1 = if the type is valid
 		- 0 = otherwise
 */
-int validate_type(char product_type[], int max_len);
+int validate_type(char* product_type, int max_len);
 
 /*
 	Validates the given manufacturer
@@ -34,7 +34,7 @@ int validate_type(char product_type[], int max_len);
 		- 1 = if the manufacturer is valid
 		- 0 = otherwise
 */
-int validate_manufacturer(char product_man[]);
+int validate_manufacturer(char* product_man);
 
 /*
 	Validates the given model
@@ -45,7 +45,7 @@ int validate_manufacturer(char product_man[]);
 		- 1 = if the model is valid
 		- 0 = otherwise
 */
-int validate_model(char product_model[]);
+int validate_model(char* product_model);
 
 /*
 	Validates the given price

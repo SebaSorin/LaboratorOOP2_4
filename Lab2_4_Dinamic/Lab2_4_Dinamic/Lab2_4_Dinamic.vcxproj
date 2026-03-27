@@ -138,6 +138,7 @@
     <ClInclude Include="validator.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="model.c" />
     <ClCompile Include="repository.c" />
     <ClCompile Include="service.c" />
     <ClCompile Include="test_repository.c" />

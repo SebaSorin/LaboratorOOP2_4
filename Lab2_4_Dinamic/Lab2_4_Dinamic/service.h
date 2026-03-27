@@ -16,6 +16,14 @@ typedef struct {
 	Inventory* inv;
 }Service;
 
+//void init_string(char* str, int length);
+
+void destroy_dinamic_service(DinamicService* serv);
+
+char** init_error_message(int message_count, int message_length);
+
+void destroy_error_message(char** error_list, int error_count);
+
 typedef int (*CompareMethod)(Product p1, Product p2);
 
 /*
@@ -39,7 +47,7 @@ typedef int (*CompareMethod)(Product p1, Product p2);
 				=> error_list contains messages relevant to the values that were invalid
 				=> error_count points to an in that is equal to the number of errors
 */
-void add_product_serv(DinamicService* serv, int id, char type[], char manufacturer[], char model[], int price, int quantity, char error_list[7][30], int* error_count);
+void add_product_serv(DinamicService* serv, int id, char* type, char* manufacturer, char* model, int price, int quantity, char** error_list, int* error_count);
 
 /*
 	Updates the price of the given product from the service
@@ -62,7 +70,7 @@ void add_product_serv(DinamicService* serv, int id, char type[], char manufactur
 				=> error_list contains messages relevant to the values that were invalid
 				=> error_count points to an in that is equal to the number of errors
 */
-int update_product_price_serv(DinamicService* serv, int product_id, int new_price, char error_msg[2][30], int* error_cnt);
+int update_product_price_serv(DinamicService* serv, int product_id, int new_price, char** error_lst, int* error_cnt);
 
 /*
 	Updates the quantity of the given product from the service
@@ -85,7 +93,7 @@ int update_product_price_serv(DinamicService* serv, int product_id, int new_pric
 				=> error_list contains messages relevant to the values that were invalid
 				=> error_count points to an in that is equal to the number of errors
 */
-int update_product_quantity_serv(DinamicService* serv, int product_id, int new_quantity, char error_lst[2][30], int* error_cnt);
+int update_product_quantity_serv(DinamicService* serv, int product_id, int new_quantity, char** error_lst, int* error_cnt);
 
 /*
 	Deletes a product from the Service object
@@ -107,7 +115,7 @@ int update_product_quantity_serv(DinamicService* serv, int product_id, int new_q
 				=> the inventory remains the same
 				=> error_message contains a message describing in what way the id was wrong
 */
-int delete_product_serv(DinamicService* serv, int product_id, char error_message[]);
+int delete_product_serv(DinamicService* serv, int product_id, char* error_message);
 
 /*
 	Swaps two products within the given service
@@ -185,7 +193,7 @@ void sort_by_quantity_generalised(DinamicService* serv, int descending_flag);
 		- otherwise
 				=> the pointer points to an empty inventory 
 */
-DinamicInventory* filter_by_manufacturer_serv(DinamicService* serv, char prod_manufacturer[], char error_message[]);
+DinamicInventory* filter_by_manufacturer_serv(DinamicService* serv, char* prod_manufacturer, char* error_message);
 
 /*
 	Filters the products that have the given price
@@ -202,7 +210,7 @@ DinamicInventory* filter_by_manufacturer_serv(DinamicService* serv, char prod_ma
 		- otherwise
 				=> the pointer points to an empty inventory
 */
-DinamicInventory* filter_by_price_serv(DinamicService* serv, int prod_price, char error_message[]);
+DinamicInventory* filter_by_price_serv(DinamicService* serv, int prod_price, char* error_message);
 
 /*
 	Filters the products that have the given quantity
@@ -219,6 +227,6 @@ DinamicInventory* filter_by_price_serv(DinamicService* serv, int prod_price, cha
 		- otherwise
 				=> the pointer points to an empty inventory
 */
-DinamicInventory* filter_by_quantity_serv(DinamicService* serv, int prod_quantity, char error_message[]);
+DinamicInventory* filter_by_quantity_serv(DinamicService* serv, int prod_quantity, char* error_message);
 
 #endif // !SERVICE_H_

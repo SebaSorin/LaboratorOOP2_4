@@ -1,11 +1,32 @@
 #include "service.h"
 #include "validator.h"
 #include <string.h>
+#include <stdlib.h>
 
-void add_product_serv(DinamicService* serv, int id, char type[], char manufacturer[], char model[], int price, int quantity, char error_list[7][30], int* error_count) {
+char** init_error_message(int message_count, int message_length) {
+	char** error_list = malloc(sizeof(char*) * message_count);
+
+	for (int i = 0; i < message_count; i++) {
+		error_list[i] = malloc(sizeof(char) * message_length);
+	}
+	return error_list;
+}
+
+void destroy_error_message(char** error_list, int error_count) {
+	for (int i = 0; i < error_count; i++)
+		free(error_list[i]);
+	free(error_list);
+}
+
+void destroy_dinamic_service(DinamicService* serv) {
+	destroy_dinamic_inventory(serv->inv);
+	serv->inv = NULL;
+}
+
+void add_product_serv(DinamicService* serv, int id, char* type, char* manufacturer, char* model, int price, int quantity, char** error_list, int* error_count) {
 	*error_count = 0;
 	if (validate_id(id) == 0)
-		strcpy_s(error_list[(*error_count)++], sizeof("Id invalid!"), "Id invalid!");
+		strcpy_s(error_list[(*error_count)++], sizeof("Id invalid!"), "Id invalid!"); 
 
 	if (validate_type(type, 30) == 0)
 		strcpy_s(error_list[(*error_count)++], sizeof("Tip invalid!"), "Tip invalid!");
@@ -23,21 +44,16 @@ void add_product_serv(DinamicService* serv, int id, char type[], char manufactur
 		strcpy_s(error_list[(*error_count)++], sizeof("Cantitate invalida!"), "Cantitate invalida!");
 
 	if (*error_count == 0) {
-		DinamicProduct prd; // = { id, type, manufacturer, model, price, quantity };
-		prd.id = id;
-		strcpy_s(prd.type, sizeof(type), type);
-		strcpy_s(prd.manufacturer, sizeof(manufacturer), manufacturer);
-		strcpy_s(prd.model, sizeof(model), model);
-		prd.price = price;
-		prd.quantity = quantity;
-
-		if (!update_product_quantity_repo(serv->inv, id, quantity))
-			add_product_repo(serv->inv, prd);
+		if (!update_product_quantity_repo(serv->inv, id, quantity)) {
+			DinamicProduct prd = create_product(id, type, manufacturer, model, price, quantity);
+			add_product_repo(serv->inv, copy_product(&prd));
+			destroy_product(&prd);
+		}
 	}
 
 }
 
-int update_product_price_serv(DinamicService* serv, int product_id, int new_price, char error_lst[2][30], int* error_cnt) {
+int update_product_price_serv(DinamicService* serv, int product_id, int new_price, char** error_lst, int* error_cnt) {
 	*error_cnt = 0;
 	if (validate_id(product_id) == 0)
 		strcpy_s(error_lst[(*error_cnt)++], sizeof("Id invalid!"), "Id invalid!");
@@ -56,7 +72,7 @@ int update_product_price_serv(DinamicService* serv, int product_id, int new_pric
 	return 1;
 }
 
-int update_product_quantity_serv(DinamicService* serv, int product_id, int new_quantity, char error_lst[2][30], int* error_cnt) {
+int update_product_quantity_serv(DinamicService* serv, int product_id, int new_quantity, char** error_lst, int* error_cnt) {
 	*error_cnt = 0;
 	if (validate_id(product_id) == 0)
 		strcpy_s(error_lst[(*error_cnt)++], sizeof("Id invalid!"), "Id invalid!");
@@ -75,7 +91,7 @@ int update_product_quantity_serv(DinamicService* serv, int product_id, int new_q
 	return 1;
 }
 
-int delete_product_serv(DinamicService* serv, int product_id, char error_message[]) {
+int delete_product_serv(DinamicService* serv, int product_id, char* error_message) {
 	if (validate_id(product_id) == 0) {
 		strcpy_s(error_message, sizeof("Id invalid!"), "Id invalid!");
 		return 0;
@@ -107,20 +123,26 @@ int swap_products(DinamicService* serv, int id1, int id2) {
 	serv->inv->products[ind1].id = serv->inv->products[ind2].id;
 	serv->inv->products[ind2].id = aux;
 
-	char temp30[30];
-	strcpy_s(temp30, sizeof(serv->inv->products[ind1].type), serv->inv->products[ind1].type);
-	strcpy_s(serv->inv->products[ind1].type, sizeof(serv->inv->products[ind2].type), serv->inv->products[ind2].type);
-	strcpy_s(serv->inv->products[ind2].type, sizeof(temp30), temp30);
+	int type_len = sizeof(char) * MAX_MODEL_LEN;
+	char* temp1 = malloc(type_len);
+	strcpy_s(temp1, type_len, serv->inv->products[ind1].type);
+	strcpy_s(serv->inv->products[ind1].type, type_len, serv->inv->products[ind2].type);
+	strcpy_s(serv->inv->products[ind2].type, type_len, temp1);
 	
-	char temp50[50];
-	strcpy_s(temp50, sizeof(serv->inv->products[ind1].manufacturer), serv->inv->products[ind1].manufacturer);
-	strcpy_s(serv->inv->products[ind1].manufacturer, sizeof(serv->inv->products[ind2].manufacturer), serv->inv->products[ind2].manufacturer);
-	strcpy_s(serv->inv->products[ind2].manufacturer, sizeof(temp50), temp50);
-		  
-	strcpy_s(temp30, sizeof(serv->inv->products[ind1].model), serv->inv->products[ind1].model);
-	strcpy_s(serv->inv->products[ind1].model, sizeof(serv->inv->products[ind2].model), serv->inv->products[ind2].model);
-	strcpy_s(serv->inv->products[ind2].model, sizeof(temp30), temp30);
 
+	int man_len = sizeof(char) * MAX_MANUFAC_LEN;
+	char* temp2 = malloc(man_len);
+	strcpy_s(temp2, man_len, serv->inv->products[ind1].manufacturer);
+	strcpy_s(serv->inv->products[ind1].manufacturer, man_len, serv->inv->products[ind2].manufacturer);
+	strcpy_s(serv->inv->products[ind2].manufacturer, man_len, temp2);
+	
+	int model_len = sizeof(char) * MAX_MODEL_LEN;
+	strcpy_s(temp1, model_len, serv->inv->products[ind1].model);
+	strcpy_s(serv->inv->products[ind1].model, model_len, serv->inv->products[ind2].model);
+	strcpy_s(serv->inv->products[ind2].model, model_len, temp1);
+	
+	free(temp1);
+	free(temp2);
 	aux = serv->inv->products[ind1].price;
 	serv->inv->products[ind1].price = serv->inv->products[ind2].price;
 	serv->inv->products[ind2].price = aux;
@@ -220,7 +242,9 @@ void sort_by_quantity_generalised(DinamicService* serv, int descending_flag) {
 	selection_sort(serv, descending_flag ? compare_quantity_descending : compare_quantity_ascending);
 }
 
-DinamicInventory* filter_by_manufacturer_serv(DinamicService* serv, char prod_manufacturer[], char error_message[]) {
+
+
+DinamicInventory* filter_by_manufacturer_serv(DinamicService* serv, char* prod_manufacturer, char* error_message) {
 	DinamicInventory* print_inv = create_dinamic_inventory();
 	if (!validate_manufacturer(prod_manufacturer)) {
 		strcpy_s(error_message, sizeof("Producator invalid!"), "Producator invalid!");
@@ -230,7 +254,7 @@ DinamicInventory* filter_by_manufacturer_serv(DinamicService* serv, char prod_ma
 	DinamicInventory* current_inv = serv->inv;
 	for (int i = 0; i < current_inv->length; i++) {
 		if (strcmp(current_inv->products[i].manufacturer, prod_manufacturer) == 0)
-			add_product_repo(print_inv, current_inv->products[i]);
+			add_product_repo(print_inv, copy_product(&(current_inv->products[i])));
 	}
 
 	if (print_inv->length == 0)
@@ -238,7 +262,7 @@ DinamicInventory* filter_by_manufacturer_serv(DinamicService* serv, char prod_ma
 	return print_inv;
 }
 
-DinamicInventory* filter_by_price_serv(DinamicService* serv, int prod_price, char error_message[]) {
+DinamicInventory* filter_by_price_serv(DinamicService* serv, int prod_price, char* error_message) {
 	DinamicInventory* print_inv = create_dinamic_inventory();
 	if (!validate_price(prod_price)) {
 		strcpy_s(error_message, sizeof("Pret invalid!"), "Pret invalid!");
@@ -248,7 +272,7 @@ DinamicInventory* filter_by_price_serv(DinamicService* serv, int prod_price, cha
 	DinamicInventory* current_inv = serv->inv;
 	for (int i = 0; i < current_inv->length; i++) {
 		if (current_inv->products[i].price == prod_price)
-			add_product_repo(print_inv, current_inv->products[i]);
+			add_product_repo(print_inv, copy_product(&(current_inv->products[i])));
 	}
 
 	if (print_inv->length == 0)
@@ -256,7 +280,7 @@ DinamicInventory* filter_by_price_serv(DinamicService* serv, int prod_price, cha
 	return print_inv;
 }
 
-DinamicInventory* filter_by_quantity_serv(DinamicService* serv, int prod_quantity, char error_message[]) {
+DinamicInventory* filter_by_quantity_serv(DinamicService* serv, int prod_quantity, char* error_message) {
 	DinamicInventory* print_inv = create_dinamic_inventory();
 	if (!validate_price(prod_quantity)) {
 		strcpy_s(error_message, sizeof("Cantitate invalida!"), "Cantitate invalida!");
@@ -266,7 +290,7 @@ DinamicInventory* filter_by_quantity_serv(DinamicService* serv, int prod_quantit
 	DinamicInventory* current_inv = serv->inv;
 	for (int i = 0; i < current_inv->length; i++) {
 		if (current_inv->products[i].quantity == prod_quantity)
-			add_product_repo(print_inv, current_inv->products[i]);
+			add_product_repo(print_inv, copy_product(&(current_inv->products[i])));
 	}
 
 	if (print_inv->length == 0)

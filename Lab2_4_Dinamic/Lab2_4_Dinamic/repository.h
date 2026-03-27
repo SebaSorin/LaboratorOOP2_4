@@ -5,7 +5,6 @@
 
 #define INITIAL_CAPACITY 100
 
-typedef Product DinamicProduct;
 
 typedef struct {
 	DinamicProduct* products;
@@ -43,6 +42,8 @@ typedef struct {
 */
 
 void add_product_repo(DinamicInventory* inv, DinamicProduct new_product);
+
+//DinamicInventory* copy_inventory(DinamicInventory* inv);
 
 /*
 	Updates the quantity of a given Product object from the inventory

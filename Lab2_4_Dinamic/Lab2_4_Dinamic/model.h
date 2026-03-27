@@ -12,24 +12,25 @@
 		- quantity = positive integer
 */
 
+#define MAX_TYPE_LEN 31
+#define MAX_MANUFAC_LEN 51
+#define MAX_MODEL_LEN 31 
+
 typedef struct {
 	int id;
-	char type[30];
-	char manufacturer[50];
-	char model[30];
+	char* type;
+	char* manufacturer;
+	char* model;
 	int price;
 	int quantity;
 }Product;
 
-//typedef struct {
-//	int id;
-//	char* type;
-//	char* manufacturer;
-//	char* model;
-//	int price;
-//	int quantity;
-//}Product;
+typedef Product DinamicProduct;
 
+DinamicProduct create_product(int id, char* type, char* manufacturer, char* model, int price, int quantity);
 
+void destroy_product(DinamicProduct* prd);
+
+DinamicProduct copy_product(DinamicProduct* prd);
 
 #endif

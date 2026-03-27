@@ -87,50 +87,77 @@ int read_char_array(char arr[], int arr_len, char msg[]) {
 
 int add_product_ui(DinamicService* serv) {
 	int id;
-	char type[30];
-	char manufacturer[50];
-	char model[30];
+	char* type = malloc(sizeof(char) * MAX_TYPE_LEN);
+	char* manufacturer = malloc(sizeof(char) * MAX_MANUFAC_LEN);
+	char* model = malloc(sizeof(char) * MAX_MODEL_LEN);
 	int price;
 	int quantity;
 
+
 	if (!read_integer(&id, "id: ")) {
 		printf("Id invalid!\n");
+		free(model);
+		free(manufacturer);
+		free(type);
 		return 0;
 	}
 
 	if (!read_char_array(type, 30, "tip: ")) {
 		printf("Tip invalid!\n");
+		free(type);
+		free(manufacturer);
+		free(model);
 		return 0;
 	}
 
 	if (!read_char_array(manufacturer, 50, "producator: ")) {
 		printf("Producator invalid!\n");
+		free(type);
+		free(manufacturer);
+		free(model);
 		return 0;
 	}
 
 	if (!read_char_array(model, 30, "model: ")) {
 		printf("Model invalid!\n");
+		free(type);
+		free(manufacturer);
+		free(model);
 		return 0;
 	}
 
 	if (!read_integer(&price, "pret: ")) {
 		printf("Pret invalid!\n");
+		free(type);
+		free(manufacturer);
+		free(model);
 		return 0;
 	}
 
 	if (!read_integer(&quantity, "cantitate: ")) {
 		printf("Cantitate invalida!\n");
+		free(type);
+		free(manufacturer);
+		free(model);
 		return 0;
 	}
 
-	char error_list[7][30];
+	char** error_list = init_error_message(7, 30);
 	int error_cnt = 0;
 	add_product_serv(serv, id, type, manufacturer, model, price, quantity, error_list, &error_cnt);
 	if (error_cnt != 0) {
 		for (int i = 0; i < error_cnt; i++)
 			printf("%s\n", error_list[i]);
+		destroy_error_message(error_list, 7);
+		free(type);
+		free(manufacturer);
+		free(model);
 		return 0;
 	}
+	destroy_error_message(error_list, 7);
+	free(type);
+	free(manufacturer);
+	free(model);
 	return 1;
 }
 
@@ -142,14 +169,16 @@ void update_product_price_ui(DinamicService* serv, int product_id) {
 			printf("Pret invalid!\n");
 
 		int err_cnt = 0;
-		char err_lst[7][30];
+		char** err_lst=init_error_message(7, 30);
 		if (update_product_price_serv(serv, product_id, new_price, err_lst, &err_cnt)) {
 			printf("Modificare efectuata cu succes!\n");
+			destroy_error_message(err_lst, 7);
 			break;
-		}			
+		}
 
 		for (int i = 0; i < err_cnt; i++)
 			printf("%s\n", err_lst[i]);
+		destroy_error_message(err_lst, 7);
 	}
 }
 
@@ -161,14 +190,16 @@ void update_product_quantity_ui(DinamicService* serv, int product_id) {
 			printf("Cantitate invalida!\n");
 
 		int err_cnt = 0;
-		char err_lst[7][30];
+		char** err_lst = init_error_message(7, 30);
 		if (update_product_quantity_serv(serv, product_id, new_quantity, err_lst, &err_cnt)) {
 			printf("Modificare efectuata cu succes!\n");
+			destroy_error_message(err_lst, 7);
 			break;
 		}
 
 		for (int i = 0; i < err_cnt; i++)
 			printf("%s\n", err_lst[i]);
+		destroy_error_message(err_lst, 7);
 	}
 }
 
@@ -212,11 +243,13 @@ int delete_product_ui(DinamicService* serv) {
 		return 0;
 	}
 
-	char err_msg[30];
+	char* err_msg = malloc(sizeof(char) * 30);
 	if (delete_product_serv(serv, id, err_msg) == 0) {
 		printf("%s", err_msg);
+		free(err_msg);
 		return 0;
 	}
+	free(err_msg);
 	return 1;
 }
 
@@ -285,16 +318,19 @@ void sort_products_generalised_ui(DinamicService* serv) {
 }
 
 void filter_by_manufacturer_ui(DinamicService* serv) {
-	char manufacturer[30];
+	char* manufacturer= malloc(sizeof(char) * MAX_MANUFAC_LEN);
 	while (!read_char_array(manufacturer, 30, "producator: "))
 		printf("Producator invalid!\n");
 
-	char err_msg[30];
+	char* err_msg= malloc(sizeof(char) * 30);
 	DinamicInventory* inv = filter_by_manufacturer_serv(serv, manufacturer, err_msg);
 	if (inv->length == 0)
 		printf(err_msg);
 	else
 		print_all_products(inv);
+	destroy_dinamic_inventory(inv);
+	free(err_msg);
+	free(manufacturer);
 }
 
 void filter_by_price_ui(DinamicService* serv) {
@@ -302,12 +338,14 @@ void filter_by_price_ui(DinamicService* serv) {
 	while (!read_integer(&price, "pret: "))
 		printf("Pret invalid!\n");
 
-	char err_msg[30];
+	char* err_msg = malloc(sizeof(char) * 30);
 	DinamicInventory* inv = filter_by_price_serv(serv, price, err_msg);
 	if (inv->length == 0)
 		printf(err_msg);
 	else
 		print_all_products(inv);
+	destroy_dinamic_inventory(inv);
+	free(err_msg);
 }
 
 void filter_by_quantity_ui(DinamicService* serv) {
@@ -315,12 +353,14 @@ void filter_by_quantity_ui(DinamicService* serv) {
 	while (!read_integer(&quantity, "cantitate: "))
 		printf("Cantitate invalida!\n");
 
-	char err_msg[30];
+	char* err_msg = malloc(sizeof(char) * 30);
 	DinamicInventory* inv = filter_by_quantity_serv(serv, quantity, err_msg);
 	if (inv->length == 0)
 		printf(err_msg);
 	else
 		print_all_products(inv);
+	destroy_dinamic_inventory(inv);
+	free(err_msg);
 }
 
 void filter_products_ui(DinamicService* serv) {
@@ -355,10 +395,16 @@ void filter_products_ui(DinamicService* serv) {
 	}
 }
 
+void add_default_products(DinamicService* serv) {
+	add_product_repo(serv->inv, create_product(1, "laptop", "acer", "aspire", 2500, 2));
+	add_product_repo(serv->inv, create_product(2, "display", "lenovo", "asdasd", 4000, 2));
+	add_product_repo(serv->inv, create_product(3, "laptop", "acer", "dagthbr", 4000, 5));
+}
+
 void test_all() {
 	test_repository_methods();
-	test_service_methods();
 	test_validator_methods();
+	test_service_methods();
 }
 
 int main() {
@@ -371,8 +417,7 @@ int main() {
 
 	DinamicInventory* inv = create_dinamic_inventory();
 	DinamicService serv = { inv };
-
-
+	add_default_products(&serv);
 	while (1) {
 		print_main_menu();
 		int option = 0;
@@ -404,7 +449,7 @@ int main() {
 		printf("\n\n");
 	}
 
-	destroy_dinamic_inventory(inv);
+	destroy_dinamic_service(&serv);
 	
 
 	return 0;
